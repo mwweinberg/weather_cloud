@@ -33,14 +33,35 @@ def relax():
 
 def start_storm1():
     print("starting storm1")
+
+    sounda = pygame.mixer.Sound('sounds/59028/storm1intro.ogg')
+    sounda.play()
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+
     return "stormy1"
 
 def in_storm1():
     print("in the storm1")
+
+    sounda = pygame.mixer.Sound('sounds/59028/storm1middle.ogg')
+    sounda.play()
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+
     return "stormy1"
 
 def end_storm1():
     print("ending storm1")
+
+    sounda = pygame.mixer.Sound('sounds/59028/storm1exit.ogg')
+    sounda.play()
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+
     return "clear"
 
 def start_storm2():
@@ -78,14 +99,35 @@ def end_storm2():
 
 def start_storm3():
     print("starting storm3")
+
+    sounda = pygame.mixer.Sound('sounds/278865/storm3intro.ogg')
+    sounda.play()
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+
     return "stormy3"
 
 def in_storm3():
     print("in the storm3")
+
+    sounda = pygame.mixer.Sound('sounds/278865/storm3middle.ogg')
+    sounda.play()
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+
     return "stormy3"
 
 def end_storm3():
     print("ending storm3")
+
+    sounda = pygame.mixer.Sound('sounds/278865/storm3exit.ogg')
+    sounda.play()
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+
     return "clear"
 
 
