@@ -34,29 +34,56 @@ def relax():
 def start_storm1():
     print("starting storm1")
     return "stormy1"
+
 def in_storm1():
     print("in the storm1")
     return "stormy1"
+
 def end_storm1():
     print("ending storm1")
     return "clear"
 
 def start_storm2():
     print("starting storm2")
+
+    sounda = pygame.mixer.Sound('sounds/54205/storm2intro.ogg')
+    sounda.play()
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+
     return "stormy2"
+
 def in_storm2():
     print("in the storm2")
+
+    sounda = pygame.mixer.Sound('sounds/54205/storm2middle.ogg')
+    sounda.play()
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+
     return "stormy2"
+
 def end_storm2():
     print("ending storm2")
+
+    sounda = pygame.mixer.Sound('sounds/54205/storm2exit.ogg')
+    sounda.play()
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+
     return "clear"
 
 def start_storm3():
     print("starting storm3")
     return "stormy3"
+
 def in_storm3():
     print("in the storm3")
     return "stormy3"
+
 def end_storm3():
     print("ending storm3")
     return "clear"
