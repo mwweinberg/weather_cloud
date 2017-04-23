@@ -1,6 +1,12 @@
 #Python 3.6
 
 from random import randint
+import pygame
+
+# setup mixer to avoid sound lag
+pygame.mixer.pre_init(44100, -16, 2, 2048)
+#initialize pygame
+pygame.mixer.init()
 
 #############################
 #####Weather states##########
@@ -13,6 +19,15 @@ from random import randint
 def relax():
     #this is whatever relax is really going to do
     print("relaxing")
+    #load the sound file
+    sounda = pygame.mixer.Sound('sounds/241913/calm1.ogg')
+    #play the sound file
+    sounda.play()
+    #not sure what this does but without it  you can't hear the sound
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+
     #and this sets the old_state properly in the engine
     return "clear"
 
@@ -45,6 +60,10 @@ def in_storm3():
 def end_storm3():
     print("ending storm3")
     return "clear"
+
+
+
+
 
 #starts things off in the clear
 old_state = "clear"
