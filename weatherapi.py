@@ -15,21 +15,29 @@ import pyowm
 #imports the variables from the config.py file
 from config import *
 
+#this is just for testing to print out the URL it is hitting and can be removed
 locationID = '4033936'
-
 print('http://api.openweathermap.org/data/2.5/weather?id='+locationID+'&appid='+API_KEY)
 
-owm = pyowm.OWM(API_KEY)
+def get_weather_code():
 
-observation = owm.weather_at_id(4033936)
+    #sets up the weather object
+    owm = pyowm.OWM(API_KEY)
+    observation = owm.weather_at_id(4033936)
+    w = observation.get_weather()
 
-w = observation.get_weather()
-print(w)
+    #gets the current weather code
+    weather_code = w.get_weather_code()
+    #for debugging
+    print(weather_code)
 
-wind = w.get_wind()
-wind_speed = wind['speed']
+    #looks for calm codes
+    if weather_code == 701 or 801 or 802 or 803 or 951 or 952 or 953 or 954 or 955:
+        print('calm state')
+        return 0
+    else:
+        print('storm_state')
+        return 1
 
-print(wind_speed)
-
-id = w.get_weather_code()
-print(id)
+get_weather_code()
+print(get_weather_code())
