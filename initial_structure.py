@@ -16,7 +16,7 @@ pygame.mixer.init()
 #because that moves the changing of old_state into the
 #function instead of putting it in the engine
 
-def relax():
+def clear():
     #this is whatever relax is really going to do
     print("relaxing")
     #load the sound file
@@ -27,111 +27,113 @@ def relax():
     channela = sounda.play()
     while channela.get_busy():
        pygame.time.delay(100)
-
-    #and this sets the old_state properly in the engine
+    #sets the storm state
+    #do this here because resetting the storm state alwas happens
     return "clear"
+
+
+def start_storm0():
+    print("starting storm0")
+
+    sounda = pygame.mixer.Sound('sounds/59028/storm0intro.ogg')
+    sounda.play()
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+    return "stormy0"
+
+
+def in_storm0():
+    print("in the storm0")
+
+    sounda = pygame.mixer.Sound('sounds/59028/storm0middle.ogg')
+    sounda.play()
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+    return "stormy0"
+
+
+def end_storm0():
+    print("ending storm0")
+
+    sounda = pygame.mixer.Sound('sounds/59028/storm0exit.ogg')
+    sounda.play()
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+    return "clear"
+
 
 def start_storm1():
     print("starting storm1")
 
-    sounda = pygame.mixer.Sound('sounds/59028/storm1intro.ogg')
+    sounda = pygame.mixer.Sound('sounds/54205/storm1intro.ogg')
     sounda.play()
     channela = sounda.play()
     while channela.get_busy():
        pygame.time.delay(100)
-
     return "stormy1"
+
 
 def in_storm1():
     print("in the storm1")
 
-    sounda = pygame.mixer.Sound('sounds/59028/storm1middle.ogg')
+    sounda = pygame.mixer.Sound('sounds/54205/storm1middle.ogg')
     sounda.play()
     channela = sounda.play()
     while channela.get_busy():
        pygame.time.delay(100)
-
     return "stormy1"
+
 
 def end_storm1():
     print("ending storm1")
 
-    sounda = pygame.mixer.Sound('sounds/59028/storm1exit.ogg')
+    sounda = pygame.mixer.Sound('sounds/54205/storm1exit.ogg')
     sounda.play()
     channela = sounda.play()
     while channela.get_busy():
        pygame.time.delay(100)
-
     return "clear"
+
 
 def start_storm2():
     print("starting storm2")
 
-    sounda = pygame.mixer.Sound('sounds/54205/storm2intro.ogg')
+    sounda = pygame.mixer.Sound('sounds/278865/storm2intro.ogg')
     sounda.play()
     channela = sounda.play()
     while channela.get_busy():
        pygame.time.delay(100)
-
     return "stormy2"
+
 
 def in_storm2():
     print("in the storm2")
 
-    sounda = pygame.mixer.Sound('sounds/54205/storm2middle.ogg')
+    sounda = pygame.mixer.Sound('sounds/278865/storm2middle.ogg')
     sounda.play()
     channela = sounda.play()
     while channela.get_busy():
        pygame.time.delay(100)
-
     return "stormy2"
+
 
 def end_storm2():
     print("ending storm2")
 
-    sounda = pygame.mixer.Sound('sounds/54205/storm2exit.ogg')
+    sounda = pygame.mixer.Sound('sounds/278865/storm2exit.ogg')
     sounda.play()
     channela = sounda.play()
     while channela.get_busy():
        pygame.time.delay(100)
-
-    return "clear"
-
-def start_storm3():
-    print("starting storm3")
-
-    sounda = pygame.mixer.Sound('sounds/278865/storm3intro.ogg')
-    sounda.play()
-    channela = sounda.play()
-    while channela.get_busy():
-       pygame.time.delay(100)
-
-    return "stormy3"
-
-def in_storm3():
-    print("in the storm3")
-
-    sounda = pygame.mixer.Sound('sounds/278865/storm3middle.ogg')
-    sounda.play()
-    channela = sounda.play()
-    while channela.get_busy():
-       pygame.time.delay(100)
-
-    return "stormy3"
-
-def end_storm3():
-    print("ending storm3")
-
-    sounda = pygame.mixer.Sound('sounds/278865/storm3exit.ogg')
-    sounda.play()
-    channela = sounda.play()
-    while channela.get_busy():
-       pygame.time.delay(100)
-
-    return "clear"
+    return "stormy2"
 
 
-
+######################
+#####Engine###########
+######################
 
 
 #starts things off in the clear
@@ -143,52 +145,70 @@ while True:
     #asks for input that governs the behavior
     #this will eventually look for the tweet
     #and will probably be a function that looks at tweets
+    #0 is calm, 1 is storm
     state = input("> ")
 
+
+    ################################
+    ###This section runs the storms#
+    ################################
     #if we are already in a storm (this is triggered by the else below)
-    if old_state == "stormy1":
+    if old_state == "stormy0":
         #"1" triggers the storm and keeps us in the storm
         if state == "1":
-            #in_storm1 is called with old_state = in_storm1()
-            #because that allows the end of in_storm1
+            #run the storm0
+            in_storm0()
+            #in_storm0 is called with old_state = in_storm0()
+            #because that allows the end of in_storm0
             #to return the correct old_state
-            old_state = in_storm1()
+            old_state = "stormy0"
         #if "1" isn't the input it is time to end the storm
         else:
-            old_state = end_storm1()
+            end_storm0()
+            old_state = "clear"
+
+    elif old_state == "stormy1":
+        if state == "1":
+            in_storm1()
+            old_state = "stormy1"
+        else:
+            end_storm1()
+            old_state = "clear"
 
     elif old_state == "stormy2":
-        if state == "2":
-            old_state = in_storm2()
-        else:
-            old_state = end_storm2()
-
-    elif old_state == "stormy3":
         if state == "1":
-            old_state = in_storm3()
+            in_storm2()
+            old_state = "stormy2"
         else:
-            old_state = end_storm3()
+            end_storm2()
+            old_state = "clear"
 
     #if things are clear
     #which is also the initial state
     else:
         #if the input is to start a storm
         if state == "1":
-            #picks 0 or 1
-            picker = randint(0,1)
-            #if picker is 0 run storm1
+            #picks 0, 1, or 2
+            picker = randint(0,2)
+            #if picker is 0 run storm0
             if picker == 0:
                 #run the start storm element
-                old_state = start_storm1()
+                start_storm0()
+                #indicate that we are in a storm state
+                old_state = "stormy0"
 
             elif picker == 1:
-                old_state = start_storm3()
+                start_storm1()
+                old_state = "stormy1"
+
+            elif picker == 2:
+                start_storm2()
+                old_state = "stormy2"
 
             else:
                 print("error in the randomly assign storm section")
-        elif state == "2":
-            old_state = start_storm2()
 
         #if it is calm and the goal is to stay calm...
         else:
-            old_state = relax()
+            clear()
+            old_state = "clear"
