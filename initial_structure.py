@@ -20,7 +20,7 @@ def clear():
     #this is whatever relax is really going to do
     print("relaxing")
     #load the sound file
-    sounda = pygame.mixer.Sound('sounds/241913/calm1.ogg')
+    sounda = pygame.mixer.Sound('sounds/calm.ogg')
     #play the sound file
     sounda.play()
     #not sure what this does but without it  you can't hear the sound
@@ -30,6 +30,38 @@ def clear():
     #sets the storm state
     #do this here because resetting the storm state alwas happens
     return "clear"
+
+def start_storm(id):
+    print("starting storm " + id)
+    filename = 'sounds/stormintro' + id + ".ogg"
+    sounda = pygame.mixer.Sound(filename)
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+    output_string = "stormy" + id
+    return output_string
+
+def in_storm(id):
+    print("in the storm " + id)
+    filename = 'sounds/stormmidle' + id + '.ogg'
+    sounda = pygame.mixer.Sound(filename)
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+    output_string = "stormy" + id
+    return output_string
+
+def end_storm(id):
+    print("ending storm " + id)
+    filename = 'sounds/stormexit' + id + '.ogg'
+    sounda = pygame.mixer.Sound(filename)
+    channela = sounda.play()
+    while channela.get_busy():
+       pygame.time.delay(100)
+    return "clear"
+
+
+
 
 
 def start_storm0():
