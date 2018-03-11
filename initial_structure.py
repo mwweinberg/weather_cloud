@@ -29,7 +29,7 @@ def clear():
        pygame.time.delay(100)
     #sets the storm state
     #do this here because resetting the storm state alwas happens
-    return "clear"
+    return 0
 
 def start_storm(id):
     print("starting storm " + id)
@@ -39,7 +39,8 @@ def start_storm(id):
     while channela.get_busy():
        pygame.time.delay(100)
     output_string = "stormy" + id
-    return output_string
+    #return output_string
+    return id
 
 def in_storm(id_int):
     id = str(id_int)
@@ -50,7 +51,8 @@ def in_storm(id_int):
     while channela.get_busy():
        pygame.time.delay(100)
     output_string = "stormy" + id
-    return output_string
+    #return output_string
+    return int(id)
 
 def end_storm(id_int):
     id = str(id_int)
@@ -60,7 +62,8 @@ def end_storm(id_int):
     channela = sounda.play()
     while channela.get_busy():
        pygame.time.delay(100)
-    return "clear"
+    #return "clear"
+    return 0
 
 
 
@@ -70,7 +73,7 @@ def end_storm(id_int):
 
 
 #starts things off in the clear
-old_state = "clear"
+old_state = 0
 
 #loops
 while True:
@@ -85,39 +88,25 @@ while True:
     ################################
     ###This section runs the storms#
     ################################
-    #if we are already in a storm (this is triggered by the else below)
-    if old_state == "stormy0":
-        #"1" triggers the storm and keeps us in the storm
-        if state == "1":
-            old_state = in_storm(0)
-        #if "1" isn't the input it is time to end the storm
-        else:
-            old_state = end_storm(0)
-
-    elif old_state == "stormy1":
-        if state == "1":
-            old_state = in_storm(1)
-        #if "1" isn't the input it is time to end the storm
-        else:
-            old_state = end_storm(1)
-
-    elif old_state == "stormy2":
-        if state == "1":
-            old_state = in_storm(2)
-        #if "1" isn't the input it is time to end the storm
-        else:
-            old_state = end_storm(2)
-
     #if things are clear
-    #which is also the initial state
-    else:
+    if old_state == 0:
         #if the input is to start a storm
         if state == "1":
-            #picks 0, 1, or 2
-            picker = str(randint(0,2))
+            #picks 1, 2, or 3
+            picker = str(randint(1,3))
             old_state = start_storm(picker)
 
         #if it is calm and the goal is to stay calm...
         else:
             #clear()
             old_state = clear()
+    #if we are in a storm
+    elif int(old_state) > 0:
+        #and we want to continue the storm
+        if int(state) == 1:
+            old_state = in_storm(old_state)
+        #or we want to wrap the storm up
+        else:
+            old_state = end_storm(old_state)
+    else:
+        print("Error in the storms")
