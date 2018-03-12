@@ -39,11 +39,11 @@ while True:
         #if the key is within two minutes of now (+/- 20 seconds)
         if (i + 100) <= now_stamp <= (i + 140):
             #print this
-            print("Two minutes ago the condition was: " + str(i))
+            print("Two minutes ago the condition was: " + str(condition_dict[i]))
 
     #temporary dict becuase you can't delete things in a dict duringa loop
     #this will be the function used to cap the size of the dictionary
-    #once it is integrated into the larger script 
+    #once it is integrated into the larger script
     cleaning_dict = {}
     #tries to clean up old keys
     for i in condition_dict:
