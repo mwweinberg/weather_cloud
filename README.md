@@ -1,6 +1,8 @@
 # weather_cloud
-A cloud that simulates weather
+A cloud that simulates weather in Tahiti when positioned on the US east coast.  In order to correct for the time difference, it will build a db of weather conditions in Tahiti when it starts.  It will rely on "current" conditions (i.e. whatever is happening at that moment on the ground) until that db has enough data to allow it to rely on 'current adjusted' conditions (i.e. if it is 4pm in NY, what happened at 4pm in Tahiti).
 
-Eventually this will have a raspberry pi monitoring inputs (probably twitter, but also possible a weather API) to trigger sound and lights (neopixels controlled by an arduino) to simulate a weather condition.
+The primary scripts will be weatherdb.py to create the weather database and weather_cloud.py to respond. The rest of the scripts (mostly in the development folder) were for learning how various bits worked.  
 
-The development folder is where the scripts that I used to figure out how various parts live. Once it reaches a stable version they will only exist for reference.
+Eventually this will have a raspberry pi triggering sound and lights to simulate the weather conditions.
+
+
