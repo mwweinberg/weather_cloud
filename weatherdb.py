@@ -53,13 +53,4 @@ while True:
     cursor.execute('''DELETE FROM users WHERE time_stamp < ? ''', (db_cutoff,))
     db.commit()
 
-    #queries the db
-    cursor.execute('''SELECT time_stamp, weather_code FROM users''')
-    for row in cursor:
-        #matches the time_stam to a condition
-        if db_cutoff < int(row[0]) < (db_cutoff+120):
-            #and if it is a hit prints the weather code 
-            print(row[1])
-
-
     time.sleep(10)
