@@ -12,17 +12,21 @@ pygame.mixer.init()
 import pyowm
 import time
 
+#for the db access
+import sqlite3
+import os
+
 #imports the variables from the config.py file
 from config import *
 
-#defines the weather object
-owm = pyowm.OWM(API_KEY)
+#create the data directory if it doesn't exist
+if not os.path.exists('data'):
+    os.makedirs('data')
 
-#dictionary to hold the weather conditions
-condition_dict = {}
-
-#holds the time that the latest reading was taken
-sample_time = 0
+#identifies the db in the data directory
+db = sqlite3.connect('data/weatherdb')
+#creates the cursor
+cursor = db.cursor()
 
 #############################
 #####Weather states##########
@@ -85,59 +89,6 @@ def end_storm(id_int):
 #####Weather data##########
 #############################
 
-#obtains the weather data and adds it to the dictionary
-def get_weather():
-    #pulls the weather data
-    observation = owm.weather_at_id(4033936)
-
-    #gets the current weather code
-    w = observation.get_weather()
-    condition = int(w.get_weather_code())
-
-    #dictionary with current time (rounded to second) and condition
-    now_stamp = int(time.time())
-    condition_dict[now_stamp] = condition
-
-    return now_stamp
-
-#finds the weather code for a moment
-#can call with find_weather(int(time.time())
-def find_weather(action_time):
-    #looks for a key that is ~2 minutes ago
-    #this will be the function used to find the action match when
-    #it is integrated into the larger script
-    for i in condition_dict:
-        #if the key is within two minutes of now (+/- 20 seconds)
-        # set this for the number of seconds back in time you want to look for
-        if (i + 100) <= action_time <= (i + 140):
-            #print this
-            print("Two minutes ago the condition was: " + str(condition_dict[i]))
-            return condition_dict[i]
-        #if it can't find one that is old enough it will just use one close to action_time
-        elif (i - 20) <= action_time <= (i + 20):
-            print("Right now the condition is: " + str(condition_dict[i]))
-            return condition_dict[i]
-        else:
-            print("there is no time match")
-            return 800
-
-#caps the size of the dictionary
-def cap_dictionary():
-    #temporary dict becuase you can't delete things in a dict duringa loop
-    #this will be the function used to cap the size of the dictionary
-    #once it is integrated into the larger script
-    cleaning_dict = {}
-    #tries to clean up old keys
-    for i in condition_dict:
-        #if i is less than 240 seconds old
-        if sample_time < (i + 240):
-            #add it to the temporary dictionary
-            cleaning_dict[i] = condition_dict[i]
-
-    #once the capped temp dict has been created swap it in for the old one
-    return cleaning_dict
-
-
 
 #turns the weather code into an action for the engine
 #probably call with 'weather_code_to_action(find_weather(int(time.time())'
@@ -151,10 +102,6 @@ def weather_code_to_action(code):
         return 1
 
 
-
-
-
-
 ######################
 #####Engine###########
 ######################
@@ -166,20 +113,54 @@ old_state = 0
 #loops
 while True:
 
-    #gets the relevant weather condition on the ground
-    #all print statements are for troubleshooting
-    sample_time = get_weather()
-    time_var = int(time.time())
-    print("time_var = " + str(time_var))
-    fw = find_weather(time_var)
-    print("fw = " + str(fw))
-    state = str(weather_code_to_action(fw))
-    print("state = " + state)
-    print("-----------")
+    ##################################################
+    ###This section queries the db and sets the state#
+    ##################################################
 
-    #cleans up the dictionary 
-    condition_dict = cap_dictionary()
-    print(condition_dict)
+    #TIME OFFSET FOR TARGET LOCATION IN SECONDS
+    time_offset = 120
+
+    #sets now rounded to zero decimal places
+    now = int(time.time())
+
+    #sets variable for time shifted target time (i.e. Tahiti time)
+    target_time = now - time_offset
+
+    #we're now looking for a hit in the db that will bump us out of the search
+
+    #variable to see if there is a hit
+    bumper = 0
+
+
+    #queries the db looking for a match in adjusted time
+    cursor.execute('''SELECT time_stamp, weather_code FROM users''')
+    for row in cursor:
+        #if there is an entry in the db that is +/- 20 seconds of target time
+        if target_time - 20 < int(row[0]) < target_time + 20:
+            #assign the corresponding code to the state
+            state = str(weather_code_to_action(row[1]))
+            print("weather code is " + str(row[1]) + " and state is " + str(state))
+            print("adjusted time")
+            #if there is a hit, bump out of this process and move to the action
+            bumper = 1
+        else:
+            pass
+
+    #if there hasn't been a hit in adjusted time, try for current time
+    if bumper == 0:
+        cursor.execute('''SELECT time_stamp, weather_code FROM users''')
+        for row in cursor:
+            if now - 20 < int(row[0]) < now + 20:
+                state = str(weather_code_to_action(row[1]))
+                print("weather code is " + str(row[1]) + " and state is " + str(state))
+                print('current time')
+                bumper = 1
+        else:
+            pass
+
+    #if there is neither a hit on current time nor adjusted time, make it calm
+    if bumper == 0:
+        state = 0
 
 
 
@@ -190,6 +171,7 @@ while True:
     #if things are clear
     if old_state == 0:
         #if the input is to start a storm
+        print("down here state is: " + str(state))
         if state == "1":
             #picks 1, 2, or 3
             picker = str(randint(1,3))
