@@ -1,12 +1,8 @@
 #Python 3.6
 
 from random import randint
-import pygame
+import simpleaudio as sa
 
-# setup mixer to avoid sound lag
-pygame.mixer.pre_init(44100, -16, 2, 2048)
-#initialize pygame
-pygame.mixer.init()
 
 #open weather map client wrapper
 import pyowm
@@ -39,49 +35,43 @@ cursor = db.cursor()
 def clear():
     #this is whatever relax is really going to do
     print("relaxing")
-    #load the sound file
-    sounda = pygame.mixer.Sound('sounds/calm.ogg')
-    #play the sound file
-    sounda.play()
-    #not sure what this does but without it  you can't hear the sound
-    channela = sounda.play()
-    while channela.get_busy():
-       pygame.time.delay(100)
-    #sets the storm state
-    #do this here because resetting the storm state alwas happens
+    #creates the audio object
+    wave_obj = sa.WaveObject.from_wave_file("sounds/calm.wav")
+    #plays the track
+    play_obj = wave_obj.play()
+    #waits until the track is done to move on
+    #without this the script will immediately move on
+    #after there are animations remove this
+    #but unitl then if you don't have it the engine will immediately move on
+    play_obj.wait_done()
     return 0
 
 def start_storm(id):
     print("starting storm " + id)
-    filename = 'sounds/stormintro' + id + ".ogg"
-    sounda = pygame.mixer.Sound(filename)
-    channela = sounda.play()
-    while channela.get_busy():
-       pygame.time.delay(100)
-    output_string = "stormy" + id
+    filename = 'sounds/stormintro' + id + ".wav"
+    wave_obj = sa.WaveObject.from_wave_file(filename)
+    play_obj = wave_obj.play()
+    play_obj.wait_done()
     #return output_string
     return id
 
 def in_storm(id_int):
     id = str(id_int)
     print("in the storm " + id)
-    filename = 'sounds/stormmiddle' + id + '.ogg'
-    sounda = pygame.mixer.Sound(filename)
-    channela = sounda.play()
-    while channela.get_busy():
-       pygame.time.delay(100)
-    output_string = "stormy" + id
+    filename = 'sounds/stormmiddle' + id + '.wav'
+    wave_obj = sa.WaveObject.from_wave_file(filename)
+    play_obj = wave_obj.play()
+    play_obj.wait_done()
     #return output_string
     return int(id)
 
 def end_storm(id_int):
     id = str(id_int)
     print("ending storm " + id)
-    filename = 'sounds/stormexit' + id + '.ogg'
-    sounda = pygame.mixer.Sound(filename)
-    channela = sounda.play()
-    while channela.get_busy():
-       pygame.time.delay(100)
+    filename = 'sounds/stormexit' + id + '.wav'
+    wave_obj = sa.WaveObject.from_wave_file(filename)
+    play_obj = wave_obj.play()
+    play_obj.wait_done()
     #return "clear"
     return 0
 
